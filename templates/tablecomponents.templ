@@ -1,0 +1,176 @@
+package templates
+
+import (
+    "main/types"
+    "strings"
+    "main/util"
+)
+
+templ TableBase(TableData types.Table) {
+
+    <div class="grid-container">
+
+    <input class="grid-search" type="search" name="search" value="" placeholder="Search" hx-post="/data/users/search" hx-trigger="keyup changed delay:500ms, search" hx-target="._tablebase tbody" hx-swap="innerHTML"></input>
+
+    <table class="_tablebase" style="width: 100%;">
+
+    <thead>
+        @TableHeaders(TableData)
+    </thead>
+
+
+    <tbody>
+      for i := 0; i < len(TableData.Rows()); i++ {
+        @TableRow(TableData.Rows()[i])
+
+    }
+ 
+        @TableRowNew(TableData)
+    </tbody>
+
+
+    </table>
+
+    </div>
+
+}
+
+templ TableHeaders(TableData types.Table) {
+
+    <tr>
+
+      for _, fieldName := range TableData.Fields() {
+        
+        if !strings.Contains(fieldName, "_") {
+          
+          <th>{ fieldName }</th>
+          
+        } else {
+
+          <th style='display:none'>{ fieldName }</th>
+
+        }
+
+      }
+    
+      <th>Edit</th>
+
+      </tr>
+
+}
+
+templ TableRowEdit(RowData types.TableRow) {
+
+       <tr class="_tablerowedit">
+
+        
+
+            for k := 0; k < len(RowData.FieldNames()); k++ {
+
+                    <td><input name={ RowData.FieldNames()[k] } value={ RowData.Value(k) }></input></td>
+
+            } 
+
+             
+
+    <td>
+        <button
+        class="btn"
+        hx-get={ "/data/" + RowData.Table().TableName() + "/id=" + util.IntToStr(RowData.GetID()) }
+        hx-target="._tablerowedit"
+        hx-swap="outerHTML"
+        hx-include="closest tr">
+        <i class='fa fa-close'></i>
+        </button>
+        <button
+        class="btn"
+        hx-put={ "/data/" + RowData.Table().TableName() + "/id=" + util.IntToStr(RowData.GetID()) }
+        hx-target="._tablerowedit"
+        hx-swap="outerHTML"
+        hx-include="closest tr">
+
+        <i class='fa fa fa-floppy-o'></i>
+        </button>
+    </td>
+    </tr>
+
+    
+}
+
+templ TableRowNew(TableData types.Table) {
+
+
+    <tr class="newrow" hx-get={ "/data/" + TableData.TableName() + "/page=" + util.IntToStr(TableData.NextPageNumber()) } hx-swap="outerHTML"  >
+    
+    for _, fieldName := range TableData.Fields() {
+    
+      if !strings.Contains(fieldName,"_") {
+        <td></td>
+      }
+
+    }
+      <td>
+        <button
+          class='btn'
+          hx-post={ "/data/" + TableData.TableName() + "/new" }
+          hx-swap="beforebegin"
+          hx-target="closest .newrow">
+          <i class='fa fa-plus-square-o'></i>
+        </button>
+      </td>
+    </tr>
+
+}
+
+templ TableRow(RowData types.TableRow) {
+    <tr class="_tablerow">
+
+        
+
+            for k := 0; k < len(RowData.FieldNames()); k++ {
+                    <td>{ RowData.Value(k) }</td>
+                 
+
+            } 
+
+                <td>
+                    <button class="btn" hx-get={ "/data/" + RowData.Table().TableName() + "/id=" + util.IntToStr(RowData.GetID()) + "/edit" } hx-target="closest tr" hx-swap="outerHTML"> 
+                    <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+
+
+        </tr>
+}
+
+templ TableRows(TableData types.Table) {
+
+  for i := 0; i < len(TableData.Rows()); i++ {
+
+    <tr class="_tablerow">
+
+        
+
+            for k := 0; k < len(TableData.Fields()); k++ {
+
+                    <td>{ TableData.Rows()[i].Value(k) }</td>
+
+            } 
+
+
+
+
+                <td>
+                    <button class="btn" hx-get={ "/data/" + TableData.TableName() + "/id=" + util.IntToStr(TableData.Rows()[i].GetID()) + "/edit" } hx-target="closest tr" hx-swap="outerHTML"> 
+                    <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+
+
+        </tr>
+
+  }
+
+ @TableRowNew(TableData)
+
+}

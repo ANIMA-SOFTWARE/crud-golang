@@ -1,0 +1,41 @@
+package templates
+
+templ Base() {
+
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css"></link>
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <title>Document</title>
+</head>
+<body>
+    <div class="grid">
+        <div class="nav-bar">
+            <div class="nav-bar-items">
+            <div></div>
+            <button class="btn tab" onclick="selectTab(this)">Stock</button>
+            <button class="btn tab" onclick="selectTab(this)">Orders</button>
+            <button class="btn tab" onclick="selectTab(this)">Dashboard</button>
+            <button class="btn tab" onclick="selectTab(this)" hx-get="/data/users" hx-target=".main-content">Users</button>
+            <button class="btn theme" onclick="toggleTheme()"><i class="fa fa-lightbulb-o"></i></button>
+            </div>       
+        </div>
+
+        <div class="main-content">
+
+        </div>
+
+
+    </div>
+
+    <script src="scripts/index.js"></script>
+</body>
+</html>
+
+
+}
+
+
