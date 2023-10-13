@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-//test 3
+//test 5
 
 function toggleTheme() {
     document.documentElement.className = (document.documentElement.className == 'light') ? 'dark' : 'light';
